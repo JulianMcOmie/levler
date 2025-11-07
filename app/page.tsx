@@ -23,6 +23,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
+      <h1 className={styles.title}>Levler</h1>
       {showInput ? (
         <div className={styles.inputContainer}>
           <input
@@ -43,5 +44,6 @@ export default function Home() {
     </main>
   );
 }
+
 
 
