@@ -16,9 +16,9 @@ export default function Home() {
   };
 
   const handleDisplayClick = () => {
-    setShowInput(true);
-    setInputValue('');
-    setDisplayText('');
+    // setShowInput(true);
+    // setInputValue('');
+    // setDisplayText('');
   };
 
   return (
