@@ -70,6 +70,8 @@
   animation: fadeIn 0.5s ease;
   max-width: 800px;
   word-wrap: break-word;
+  user-select: text;
+  cursor: text;
 }
 
 @media (max-width: 768px) {
