@@ -17,6 +17,7 @@ export default function Home() {
 
   const handleDisplayClick = () => {
   };
+  
 
   return (
     <main className={styles.main}>
