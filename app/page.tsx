@@ -16,7 +16,7 @@ export default function Home() {
   };
 
   const handleDisplayClick = () => {
-    // handle clicking on the text 
+    // handle clicking on the text  
   };
 
 
