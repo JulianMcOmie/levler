@@ -28,7 +28,7 @@ export default function Home() {
           <input
             type="text"
             className={styles.textBox}
-            placeholder="Type something you want to know about and press Enter..."
+            placeholder="Type something you want to learn and press Enter..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
