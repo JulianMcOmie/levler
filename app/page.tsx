@@ -125,12 +125,17 @@ export default function Home() {
               <div className={styles.loadingText}>Thinking...</div>
             ) : (
               aiResponse && (
-                <div 
-                  className={styles.aiResponse}
-                  onMouseUp={handleTextSelection}
-                >
-                  {aiResponse}
-                </div>
+                <>
+                  <div className={styles.hintText}>
+                    💡 Highlight any text to explore deeper
+                  </div>
+                  <div 
+                    className={styles.aiResponse}
+                    onMouseUp={handleTextSelection}
+                  >
+                    {aiResponse}
+                  </div>
+                </>
               )
             )}
             <button className={styles.backButton} onClick={handleDisplayClick}>
