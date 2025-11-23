@@ -8,7 +8,9 @@ export async function POST(request: Request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const result = await model.generateContent(message);
+    const prompt = `In ten words or less, explain at the highest level: ${message}\nUse important key terms naturally in your explanation.`;
+    
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 

@@ -9,29 +9,36 @@ export default function Home() {
   const [showInput, setShowInput] = useState(true);
   const [aiResponse, setAiResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [originalTopic, setOriginalTopic] = useState('');
+  const [contextPath, setContextPath] = useState<string[]>([]);
+
+  const fetchResponse = async (query: string, context?: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: query, context }),
+      });
+      
+      const data = await response.json();
+      setAiResponse(data.response);
+    } catch (error) {
+      console.error('Error:', error);
+      setAiResponse('Sorry, something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyPress = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && inputValue.trim()) {
       const userInput = inputValue.trim();
       setDisplayText(userInput);
+      setOriginalTopic(userInput);
+      setContextPath([]);
       setShowInput(false);
-      setLoading(true);
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userInput }),
-        });
-        
-        const data = await response.json();
-        setAiResponse(data.response);
-      } catch (error) {
-        console.error('Error:', error);
-        setAiResponse('Sorry, something went wrong.');
-      } finally {
-        setLoading(false);
-      }
+      await fetchResponse(userInput);
     }
   };
 
@@ -40,6 +47,20 @@ export default function Home() {
     setInputValue('');
     setDisplayText('');
     setAiResponse('');
+    setOriginalTopic('');
+    setContextPath([]);
+  };
+
+  const handleTextSelection = async () => {
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+    
+    if (selectedText && selectedText.length > 0) {
+      setDisplayText(selectedText);
+      setContextPath([...contextPath, displayText]);
+      await fetchResponse(selectedText);
+      selection?.removeAllRanges();
+    }
   };
 
 
@@ -59,12 +80,24 @@ export default function Home() {
           />
         </div>
       ) : (
-        <div className={styles.displayContainer}>
-          <div className={styles.displayText}>{displayText}</div>
+        <div className={styles.responseContainer}>
+          {contextPath.length > 0 && (
+            <div className={styles.breadcrumb}>
+              {originalTopic} {contextPath.map((item, i) => ` → ${item}`).join('')} → {displayText}
+            </div>
+          )}
+          <div className={styles.questionText}>{displayText}</div>
           {loading ? (
-            <div className={styles.aiResponse}>Thinking...</div>
+            <div className={styles.loadingText}>Thinking...</div>
           ) : (
-            aiResponse && <div className={styles.aiResponse}>{aiResponse}</div>
+            aiResponse && (
+              <div 
+                className={styles.aiResponse}
+                onMouseUp={handleTextSelection}
+              >
+                {aiResponse}
+              </div>
+            )
           )}
           <button className={styles.backButton} onClick={handleDisplayClick}>
             Ask something else

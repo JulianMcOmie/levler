@@ -48,30 +48,108 @@
   border-color: #333;
 }
 
-.displayContainer {
+.responseContainer {
   width: 100%;
+  max-width: 900px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  cursor: pointer;
+  gap: 30px;
+  padding: 40px 20px;
 }
 
-.displayText {
-  font-size: 48px;
+.breadcrumb {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-family: monospace;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.questionText {
+  font-size: 28px;
   font-weight: 600;
   color: white;
   text-align: center;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
-  animation: fadeIn 0.5s ease;
-  max-width: 800px;
+  width: 100%;
   word-wrap: break-word;
   user-select: text;
+}
+
+.loadingText {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.aiResponse {
+  font-size: 18px;
+  line-height: 1.8;
+  color: white;
+  text-align: left;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  word-wrap: break-word;
+  user-select: text;
+  white-space: pre-wrap;
+  animation: fadeIn 0.5s ease;
   cursor: text;
+}
+
+.aiResponse::selection {
+  background: rgba(79, 195, 247, 0.3);
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.backButton {
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -80,9 +158,14 @@
     padding: 15px 20px;
   }
   
-  .displayText {
-    font-size: 32px;
-    padding: 30px;
+  .questionText {
+    font-size: 22px;
+    padding: 16px 24px;
+  }
+
+  .aiResponse {
+    font-size: 16px;
+    padding: 24px;
   }
 }
 
