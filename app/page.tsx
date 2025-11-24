@@ -19,22 +19,40 @@ export default function Home() {
   const [contextPath, setContextPath] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
-  const fetchResponse = async (query: string, addToHistory: boolean = true) => {
+  const fetchResponse = async (query: string, addToHistory: boolean = true, depth: number = 0) => {
     setLoading(true);
     try {
+      // Build path of previous queries for context
+      const pathContext = history.length > 0 
+        ? history.map(h => h.query).join(' → ')
+        : '';
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({ 
+          message: query,
+          context: originalTopic || undefined,
+          depth,
+          pathContext
+        }),
       });
       
       const data = await response.json();
-      setAiResponse(data.response);
+      let responseText = data.response;
+      
+      // Enforce 10-word limit on client side as backup
+      const words = responseText.trim().split(/\s+/);
+      if (words.length > 10) {
+        responseText = words.slice(0, 10).join(' ') + '...';
+      }
+      
+      setAiResponse(responseText);
       
       if (addToHistory) {
         setHistory(prev => [...prev, {
           query,
-          response: data.response,
+          response: responseText,
           timestamp: Date.now()
         }]);
       }
@@ -81,7 +99,7 @@ export default function Home() {
     if (selectedText && selectedText.length > 0) {
       setDisplayText(selectedText);
       setContextPath([...contextPath, displayText]);
-      await fetchResponse(selectedText);
+      await fetchResponse(selectedText, true, history.length);
       selection?.removeAllRanges();
     }
   };

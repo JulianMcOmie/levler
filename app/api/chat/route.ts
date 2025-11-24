@@ -3,12 +3,31 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { message } = await request.json();
+    const { message, context, depth = 0, pathContext } = await request.json();
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `In ten words or less, explain at the highest level: ${message}\nUse important key terms naturally in your explanation.`;
+    let prompt;
+    if (context && depth > 0) {
+      prompt = `STRICT RULES:
+1. Response MUST be 10 words or fewer - this is critical
+2. Each level goes ONE step MORE SPECIFIC/TECHNICAL than before
+3. Never repeat previous definitions
+4. Use progressively more detailed terminology
+
+Context: ${context}
+${pathContext ? `Previous path: ${pathContext}` : ''}
+
+Explain "${message}" specifically in the context above.
+Level ${depth} depth - be MORE SPECIFIC and TECHNICAL than level ${depth - 1}.
+Use precise technical terms.
+MAXIMUM 10 WORDS.`;
+    } else {
+      prompt = `Explain at the highest level in EXACTLY 10 words or fewer: ${message}
+Use important key terms naturally.
+MAXIMUM 10 WORDS.`;
+    }
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
