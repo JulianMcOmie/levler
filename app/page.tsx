@@ -18,6 +18,7 @@ export default function Home() {
   const [originalTopic, setOriginalTopic] = useState('');
   const [contextPath, setContextPath] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const fetchResponse = async (query: string, addToHistory: boolean = true, depth: number = 0) => {
     setLoading(true);
@@ -106,14 +107,23 @@ export default function Home() {
 
 
   return (
-    <main className={styles.main}>
-      <h1 className={styles.title}>Levler</h1>
+    <main className={`${styles.main} ${isDarkMode ? styles.dark : styles.light}`}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Levler</h1>
+        <button 
+          className={styles.themeToggle}
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          aria-label="Toggle theme"
+        >
+          {isDarkMode ? '☀️' : '🌙'}
+        </button>
+      </div>
       {showInput ? (
         <div className={styles.inputContainer}>
           <input
             type="text"
             className={styles.textBox}
-            placeholder="Type something you want to learn and press Enter..."
+            placeholder="Type something you want to understand and press enter"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}

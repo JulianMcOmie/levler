@@ -1,3 +1,47 @@
+/* Light mode colors */
+.light {
+  --bg-primary: #f7f7f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f9fafb;
+  --bg-hover: #f3f4f6;
+  --bg-active: #eff6ff;
+  --text-primary: #202123;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --text-muted: #9ca3af;
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --border-active: #93c5fd;
+  --accent-primary: #10a37f;
+  --accent-secondary: #bfdbfe;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --hint-bg: #fef3c7;
+  --hint-border: #fde68a;
+}
+
+/* Dark mode colors */
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #1f1f1f;
+  --bg-hover: #333333;
+  --bg-active: #1e3a5f;
+  --text-primary: #ececec;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-muted: #6b7280;
+  --border-primary: #404040;
+  --border-secondary: #505050;
+  --border-active: #5b8bb5;
+  --accent-primary: #10a37f;
+  --accent-secondary: #3b5a7e;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --hint-bg: #3d3520;
+  --hint-border: #5a4a1a;
+}
+
 .main {
   width: 100%;
   height: 100vh;
@@ -5,18 +49,44 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: var(--bg-primary);
+  transition: background 0.3s ease;
+}
+
+.header {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 48px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   margin: 0;
   text-align: center;
+}
+
+.themeToggle {
+  position: absolute;
+  right: 40px;
+  padding: 10px 16px;
+  font-size: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.themeToggle:hover {
+  background: var(--bg-hover);
+  transform: scale(1.05);
 }
 
 .inputContainer {
@@ -29,23 +99,26 @@
 
 .textBox {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   padding: 16px 24px;
   font-size: 20px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  background: var(--bg-secondary);
   transition: all 0.2s ease;
   outline: none;
   text-align: center;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
 }
 
 .textBox::placeholder {
-  color: #999;
+  color: var(--text-muted);
 }
 
 .textBox:focus {
-  border-color: #333;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.1);
 }
 
 .mainContainer {
@@ -61,17 +134,17 @@
   flex: 0 0 300px;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
   border-radius: 12px;
   padding: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
 }
 
 .historyTitle {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-tertiary);
   margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -80,7 +153,7 @@
 .historyItem {
   padding: 12px;
   margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -88,26 +161,25 @@
 }
 
 .historyItem:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(4px);
+  background: var(--bg-hover);
+  border-color: var(--border-primary);
 }
 
 .historyItemActive {
-  background: rgba(79, 195, 247, 0.15);
-  border-color: rgba(79, 195, 247, 0.3);
+  background: var(--bg-active);
+  border-color: var(--border-active);
 }
 
 .historyQuery {
   font-size: 13px;
   font-weight: 600;
-  color: #4fc3f7;
+  color: var(--text-secondary);
   margin-bottom: 6px;
 }
 
 .historyResponse {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-tertiary);
   line-height: 1.4;
 }
 
@@ -120,29 +192,16 @@
   min-width: 0;
 }
 
-.breadcrumb {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  font-family: monospace;
-  width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
 .questionText {
   font-size: 28px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
   text-align: center;
   padding: 20px 30px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--bg-secondary);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
   width: 100%;
   word-wrap: break-word;
   user-select: text;
@@ -150,20 +209,20 @@
 
 .loadingText {
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-tertiary);
   font-style: italic;
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 .hintText {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
   font-style: italic;
   text-align: center;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hint-bg);
   border-radius: 8px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--hint-border);
 }
 
 @keyframes pulse {
@@ -174,14 +233,13 @@
 .aiResponse {
   font-size: 18px;
   line-height: 1.8;
-  color: white;
+  color: var(--text-secondary);
   text-align: left;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
   width: 100%;
   word-wrap: break-word;
   user-select: text;
@@ -191,8 +249,8 @@
 }
 
 .aiResponse::selection {
-  background: rgba(79, 195, 247, 0.3);
-  color: white;
+  background: var(--accent-secondary);
+  color: var(--text-primary);
 }
 
 @keyframes fadeIn {
@@ -210,19 +268,20 @@
   padding: 12px 30px;
   font-size: 16px;
   font-weight: 500;
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .backButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: var(--bg-tertiary);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 1024px) {
@@ -238,6 +297,16 @@
 }
 
 @media (max-width: 768px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .themeToggle {
+    right: 20px;
+    padding: 8px 12px;
+    font-size: 18px;
+  }
+
   .textBox {
     font-size: 18px;
     padding: 15px 20px;
