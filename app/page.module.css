@@ -246,6 +246,41 @@
   white-space: pre-wrap;
   animation: fadeIn 0.5s ease;
   cursor: text;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.aiResponse:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1), var(--shadow-md);
+}
+
+.aiResponse:hover::before {
+  content: '✨ Highlight text to explore deeper';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeInTooltip 0.2s ease;
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .aiResponse::selection {
