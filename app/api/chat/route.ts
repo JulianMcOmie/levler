@@ -42,4 +42,3 @@ MAXIMUM 10 WORDS.`;
     );
   }
 }
-
