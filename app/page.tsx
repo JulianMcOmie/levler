@@ -42,7 +42,7 @@ export default function Home() {
       const data = await response.json();
       let responseText = data.response;
       
-      // Enforce 10-word limit on client side as backup
+      // Enforce 10-word response limit on client side as backup
       const words = responseText.trim().split(/\s+/);
       if (words.length > 10) {
         responseText = words.slice(0, 10).join(' ') + '...';
