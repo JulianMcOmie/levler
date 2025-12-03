@@ -33,6 +33,9 @@ export default function Home() {
         ? history.map(h => h.query).join(' → ')
         : '';
       
+      // Collect all previously explored terms to prevent circular definitions
+      const usedTerms = history.map(h => h.query.toLowerCase());
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,18 +43,13 @@ export default function Home() {
           message: query,
           context: originalTopic || undefined,
           depth,
-          pathContext
+          pathContext,
+          usedTerms
         }),
       });
       
       const data = await response.json();
-      let responseText = data.response;
-      
-      // Enforce 10-word response limit on client side as backup
-      const words = responseText.trim().split(/\s+/);
-      if (words.length > 10) {
-        responseText = words.slice(0, 10).join(' ') + '...';
-      }
+      const responseText = data.response.trim();
       
       setAiResponse(responseText);
       

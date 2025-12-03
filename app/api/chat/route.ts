@@ -3,25 +3,29 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { message, context, depth = 0, pathContext } = await request.json();
+    const { message, context, depth = 0, pathContext, usedTerms = [] } = await request.json();
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     let prompt;
     if (context && depth > 0) {
+      // Build a list of forbidden terms from the exploration path (only exact terms user queried)
+      const forbiddenTerms = usedTerms.length > 0 
+        ? `\n5. Do NOT use these exact terms (already explored): ${usedTerms.join(', ')}`
+        : '';
+      
       prompt = `STRICT RULES:
 1. Response MUST be 10 words or fewer - this is critical
-2. Each level goes ONE step MORE SPECIFIC/TECHNICAL than before
-3. Never repeat previous definitions
-4. Use progressively more detailed terminology
+2. Explain using MORE FUNDAMENTAL concepts (simpler building blocks)
+3. NEVER define using terms that require more advanced knowledge than the term itself
+4. Basic vocabulary (molecule, atom, bond, cell, etc.) is ALWAYS allowed${forbiddenTerms}
 
-Context: ${context}
-${pathContext ? `Previous path: ${pathContext}` : ''}
+Original topic: ${context}
+${pathContext ? `Exploration path: ${pathContext}` : ''}
 
-Explain "${message}" specifically in the context above.
-Level ${depth} depth - be MORE SPECIFIC and TECHNICAL than level ${depth - 1}.
-Use precise technical terms.
+Explain "${message}" using simpler, more foundational terms.
+Depth ${depth} - use progressively more basic vocabulary. Ground in fundamentals.
 MAXIMUM 10 WORDS.`;
     } else {
       prompt = `Explain at the highest level in EXACTLY 10 words or fewer: ${message}
