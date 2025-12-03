@@ -99,7 +99,7 @@ export default function Home() {
   // Parse response into tokens (words + their following delimiters)
   interface Token {
     word: string;
-    delimiter: string; // space, dash, or empty for last word
+    delimiter: string; // space, dash, or empty for last word (nothing remaining)
   }
   
   const parseTokens = useCallback((text: string): Token[] => {
