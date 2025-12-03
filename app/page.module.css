@@ -256,7 +256,7 @@
 }
 
 .aiResponse:hover::before {
-  content: '✨ Highlight text to explore deeper';
+  content: '✨ Click and drag to select words';
   position: absolute;
   top: -10px;
   left: 50%;
@@ -284,8 +284,70 @@
 }
 
 .aiResponse::selection {
-  background: var(--accent-secondary);
-  color: var(--text-primary);
+  background: transparent;
+}
+
+.selectableWord {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  display: inline;
+  position: relative;
+  z-index: 1;
+}
+
+.selectableWord::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: -0.1em;
+  right: 0.15em;
+  border-radius: 3px;
+  z-index: -1;
+  transition: background 0.15s ease;
+  pointer-events: none;
+}
+
+.selectableWord:hover::before {
+  background: var(--bg-hover);
+}
+
+/* Single word selected */
+.wordSelectedSingle::before {
+  background: var(--accent-primary) !important;
+  border-radius: 3px;
+}
+
+/* First word in selection */
+.wordSelectedFirst::before {
+  background: var(--accent-primary) !important;
+  border-radius: 3px 0 0 3px;
+  right: -0.25em;
+}
+
+/* Middle words in selection */
+.wordSelectedMiddle::before {
+  background: var(--accent-primary) !important;
+  border-radius: 0;
+  left: -0.25em;
+  right: -0.25em;
+}
+
+/* Last word in selection */
+.wordSelectedLast::before {
+  background: var(--accent-primary) !important;
+  border-radius: 0 3px 3px 0;
+  left: -0.25em;
+}
+
+.wordSelectedSingle,
+.wordSelectedFirst,
+.wordSelectedMiddle,
+.wordSelectedLast {
+  color: white !important;
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes fadeIn {

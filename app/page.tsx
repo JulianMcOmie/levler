@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useCallback, useRef } from 'react';
 import styles from './page.module.css';
 
 interface HistoryItem {
@@ -19,6 +19,11 @@ export default function Home() {
   const [contextPath, setContextPath] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  
+  // Word selection state
+  const [selectedWords, setSelectedWords] = useState<Set<number>>(new Set());
+  const [isSelecting, setIsSelecting] = useState(false);
+  const selectionStartRef = useRef<number | null>(null);
 
   const fetchResponse = async (query: string, addToHistory: boolean = true, depth: number = 0) => {
     setLoading(true);
@@ -93,16 +98,94 @@ export default function Home() {
     setHistory(prev => prev.slice(0, index + 1));
   };
 
-  const handleTextSelection = async () => {
-    const selection = window.getSelection();
-    const selectedText = selection?.toString().trim();
-    
-    if (selectedText && selectedText.length > 0) {
-      setDisplayText(selectedText);
-      setContextPath([...contextPath, displayText]);
-      await fetchResponse(selectedText, true, history.length);
-      selection?.removeAllRanges();
+  // Parse response into words (preserving punctuation attached to words)
+  const parseWords = useCallback((text: string): string[] => {
+    return text.split(/\s+/).filter(word => word.length > 0);
+  }, []);
+
+  const handleWordMouseDown = (index: number) => {
+    setIsSelecting(true);
+    selectionStartRef.current = index;
+    setSelectedWords(new Set([index]));
+  };
+
+  const handleWordMouseEnter = (index: number) => {
+    if (isSelecting && selectionStartRef.current !== null) {
+      const start = Math.min(selectionStartRef.current, index);
+      const end = Math.max(selectionStartRef.current, index);
+      const newSelection = new Set<number>();
+      for (let i = start; i <= end; i++) {
+        newSelection.add(i);
+      }
+      setSelectedWords(newSelection);
     }
+  };
+
+  const handleWordMouseUp = async () => {
+    if (isSelecting && selectedWords.size > 0) {
+      const words = parseWords(aiResponse);
+      const selectedText = Array.from(selectedWords)
+        .sort((a, b) => a - b)
+        .map(i => words[i])
+        .join(' ')
+        .replace(/[.,!?;:]+$/, ''); // Remove trailing punctuation
+      
+      if (selectedText.length > 0) {
+        setDisplayText(selectedText);
+        setContextPath([...contextPath, displayText]);
+        await fetchResponse(selectedText, true, history.length);
+      }
+    }
+    setIsSelecting(false);
+    setSelectedWords(new Set());
+    selectionStartRef.current = null;
+  };
+
+  const handleMouseLeaveResponse = () => {
+    if (isSelecting) {
+      setIsSelecting(false);
+      setSelectedWords(new Set());
+      selectionStartRef.current = null;
+    }
+  };
+
+  const renderSelectableWords = () => {
+    const words = parseWords(aiResponse);
+    const sortedSelected = Array.from(selectedWords).sort((a, b) => a - b);
+    const firstSelected = sortedSelected[0];
+    const lastSelected = sortedSelected[sortedSelected.length - 1];
+    
+    return words.map((word, index) => {
+      const isSelected = selectedWords.has(index);
+      const isFirst = index === firstSelected;
+      const isLast = index === lastSelected;
+      
+      let selectionClass = '';
+      if (isSelected) {
+        if (isFirst && isLast) {
+          selectionClass = styles.wordSelectedSingle;
+        } else if (isFirst) {
+          selectionClass = styles.wordSelectedFirst;
+        } else if (isLast) {
+          selectionClass = styles.wordSelectedLast;
+        } else {
+          selectionClass = styles.wordSelectedMiddle;
+        }
+      }
+      
+      return (
+        <span
+          key={index}
+          className={`${styles.selectableWord} ${selectionClass}`}
+          onMouseDown={() => handleWordMouseDown(index)}
+          onMouseEnter={() => handleWordMouseEnter(index)}
+          onMouseUp={handleWordMouseUp}
+        >
+          {word}
+          {index < words.length - 1 && ' '}
+        </span>
+      );
+    });
   };
 
 
@@ -155,13 +238,13 @@ export default function Home() {
               aiResponse && (
                 <>
                   <div className={styles.hintText}>
-                    💡 Highlight any text to explore deeper
+                    💡 Click and drag across words to explore deeper
                   </div>
                   <div 
                     className={styles.aiResponse}
-                    onMouseUp={handleTextSelection}
+                    onMouseLeave={handleMouseLeaveResponse}
                   >
-                    {aiResponse}
+                    {renderSelectableWords()}
                   </div>
                 </>
               )
