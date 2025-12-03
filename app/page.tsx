@@ -214,7 +214,6 @@ export default function Home() {
           className={`${styles.selectableWord} ${selectionClass}`}
           onMouseDown={() => handleWordMouseDown(index)}
           onMouseEnter={() => handleWordMouseEnter(index)}
-          onMouseUp={handleWordMouseUp}
         >
           {token.word}
           {token.delimiter}
