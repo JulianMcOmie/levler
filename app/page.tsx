@@ -96,10 +96,35 @@ export default function Home() {
     setHistory(prev => prev.slice(0, index + 1));
   };
 
-  // Parse response into words (preserving punctuation attached to words)
-  const parseWords = useCallback((text: string): string[] => {
-    return text.split(/\s+/).filter(word => word.length > 0);
+  // Parse response into tokens (words + their following delimiters)
+  interface Token {
+    word: string;
+    delimiter: string; // space, dash, or empty for last word
+  }
+  
+  const parseTokens = useCallback((text: string): Token[] => {
+    const tokens: Token[] = [];
+    // Split on whitespace and dashes, keeping the delimiters
+    const parts = text.split(/(\s+|-)/);
+    
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      // Skip empty parts and delimiter-only parts
+      if (!part || /^(\s+|-)$/.test(part)) continue;
+      
+      // Look ahead for the delimiter
+      const nextPart = parts[i + 1] || '';
+      const delimiter = /^-$/.test(nextPart) ? '-' : /^\s+$/.test(nextPart) ? ' ' : '';
+      
+      tokens.push({ word: part, delimiter });
+    }
+    return tokens;
   }, []);
+  
+  // Helper to get just the words array
+  const parseWords = useCallback((text: string): string[] => {
+    return parseTokens(text).map(t => t.word);
+  }, [parseTokens]);
 
   const handleWordMouseDown = (index: number) => {
     setIsSelecting(true);
@@ -121,12 +146,24 @@ export default function Home() {
 
   const handleWordMouseUp = async () => {
     if (isSelecting && selectedWords.size > 0) {
-      const words = parseWords(aiResponse);
-      const selectedText = Array.from(selectedWords)
-        .sort((a, b) => a - b)
-        .map(i => words[i])
-        .join(' ')
-        .replace(/[.,!?;:]+$/, ''); // Remove trailing punctuation
+      const tokens = parseTokens(aiResponse);
+      const sortedIndices = Array.from(selectedWords).sort((a, b) => a - b);
+      
+      // Build the selected text with correct delimiters
+      let selectedText = '';
+      for (let i = 0; i < sortedIndices.length; i++) {
+        const idx = sortedIndices[i];
+        const token = tokens[idx];
+        selectedText += token.word;
+        
+        // Add delimiter if there's a next selected word that's consecutive
+        if (i < sortedIndices.length - 1 && sortedIndices[i + 1] === idx + 1) {
+          selectedText += token.delimiter;
+        }
+      }
+      
+      // Remove trailing punctuation
+      selectedText = selectedText.replace(/[.,!?;:]+$/, '');
       
       if (selectedText.length > 0) {
         setDisplayText(selectedText);
@@ -148,12 +185,12 @@ export default function Home() {
   };
 
   const renderSelectableWords = () => {
-    const words = parseWords(aiResponse);
+    const tokens = parseTokens(aiResponse);
     const sortedSelected = Array.from(selectedWords).sort((a, b) => a - b);
     const firstSelected = sortedSelected[0];
     const lastSelected = sortedSelected[sortedSelected.length - 1];
     
-    return words.map((word, index) => {
+    return tokens.map((token, index) => {
       const isSelected = selectedWords.has(index);
       const isFirst = index === firstSelected;
       const isLast = index === lastSelected;
@@ -179,8 +216,8 @@ export default function Home() {
           onMouseEnter={() => handleWordMouseEnter(index)}
           onMouseUp={handleWordMouseUp}
         >
-          {word}
-          {index < words.length - 1 && ' '}
+          {token.word}
+          {token.delimiter}
         </span>
       );
     });
