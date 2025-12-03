@@ -1,4 +1,4 @@
-# Levler
+# Leveler
 
 A simple Next.js TypeScript app with a centered text input that displays the typed text.
 
@@ -41,4 +41,4 @@ http://localhost:3000
 - `npm run build` - Build for production
 - `npm start` - Start the production server
 - `npm run lint` - Run ESLint
-# levler
+# leveler

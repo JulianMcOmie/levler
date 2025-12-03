@@ -192,7 +192,7 @@ export default function Home() {
   return (
     <main className={`${styles.main} ${isDarkMode ? styles.dark : styles.light}`}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Levler</h1>
+        <h1 className={styles.title}>Leveler</h1>
         <button 
           className={styles.themeToggle}
           onClick={() => setIsDarkMode(!isDarkMode)}
