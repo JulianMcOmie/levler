@@ -278,6 +278,7 @@ export default function Home() {
                   <div 
                     className={styles.aiResponse}
                     onMouseLeave={handleMouseLeaveResponse}
+                    onMouseUp={handleWordMouseUp}
                   >
                     {renderSelectableWords()}
                   </div>
