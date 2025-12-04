@@ -25,14 +25,9 @@ export default function Home() {
   const [isSelecting, setIsSelecting] = useState(false);
   const selectionStartRef = useRef<number | null>(null);
 
-  const fetchResponse = async (query: string, addToHistory: boolean = true, depth: number = 0) => {
+  const fetchResponse = async (query: string, addToHistory: boolean = true, depth: number = 0, immediateContext?: string) => {
     setLoading(true);
     try {
-      // Build path of previous queries for context
-      const pathContext = history.length > 0 
-        ? history.map(h => h.query).join(' → ')
-        : '';
-      
       // Collect all previously explored query terms to prevent circular definitions
       const usedTerms = history.map(h => h.query.toLowerCase());
       
@@ -41,7 +36,8 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message: query,
-          context: originalTopic || undefined,
+          originalTopic: originalTopic || undefined,
+          immediateContext: immediateContext || undefined,
           depth,
           usedTerms
         }),
@@ -167,7 +163,8 @@ export default function Home() {
       if (selectedText.length > 0) {
         setDisplayText(selectedText);
         setContextPath([...contextPath, displayText]);
-        await fetchResponse(selectedText, true, history.length);
+        // Pass current response as the immediate context for the next definition
+        await fetchResponse(selectedText, true, history.length, aiResponse);
       }
     }
     setIsSelecting(false);
