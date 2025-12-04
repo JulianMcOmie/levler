@@ -28,6 +28,7 @@ Requirements:
 - 10 words maximum
 - One sentence response - no semi colons, no new lines.
 - Explain what "${message}" means in that specific sentence
+- Jargon is ok.
 - Keep it grounded in the practical context, not abstract${forbiddenTerms}${topicAnchor}`;
     } else {
       prompt = `Explain in 10 words or fewer: ${message}
