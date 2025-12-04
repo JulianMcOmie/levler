@@ -26,7 +26,7 @@ The user selected "${message}" and wants to understand it.
 
 Requirements:
 - 10 words maximum
-- one sentence response. No semi colons. No new lines.
+- One sentence response. No semi colons. No new lines.
 - Explain what "${message}" means in that specific sentence
 - Keep it grounded in the practical context, not abstract${forbiddenTerms}${topicAnchor}`;
     } else {
