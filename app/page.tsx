@@ -33,7 +33,7 @@ export default function Home() {
         ? history.map(h => h.query).join(' → ')
         : '';
       
-      // Collect all previously explored terms to prevent circular definitions
+      // Collect all previously explored query terms to prevent circular definitions
       const usedTerms = history.map(h => h.query.toLowerCase());
       
       const response = await fetch('/api/chat', {
