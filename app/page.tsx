@@ -43,7 +43,6 @@ export default function Home() {
           message: query,
           context: originalTopic || undefined,
           depth,
-          pathContext,
           usedTerms
         }),
       });
