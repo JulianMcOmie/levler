@@ -28,11 +28,12 @@ Requirements:
 - 10 words maximum
 - One sentence response - no semi colons, no new lines.
 - Explain what "${message}" means in that specific sentence
-- Jargon is ok.
+- USE technical jargon and precise terminology - give the user more terms to explore
 - Keep it grounded in the practical context, not abstract${forbiddenTerms}${topicAnchor}`;
     } else {
       prompt = `Explain in 10 words or fewer: ${message}
-No LaTeX, no math symbols, plain English.
+Use technical jargon and precise terminology.
+No LaTeX, no math symbols.
 MAXIMUM 10 WORDS.`;
     }
     
