@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     let prompt;
     if (immediateContext && depth > 0) {
-      // Build forbidden terms list
+      // Build forbidden terms list (made up of previously explored terms)
       const forbiddenTerms = usedTerms.length > 0 
         ? `\nAvoid these already-explored terms: ${usedTerms.join(', ')}`
         : '';
